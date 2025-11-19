@@ -336,7 +336,7 @@ useEffect(() => {
   // =============================
   // UI
   // =============================
-  if (!questions.length) return <div className="p-6 text-center">Loading...{examId}</div>;
+  if (!questions.length) return <div className="p-6 text-center">Loading...</div>;
 
   const q = questions[current];
   const hours = Math.floor(timeLeft / 3600);
@@ -370,7 +370,7 @@ useEffect(() => {
               onChange={() => setSelected(value)}
               disabled={feedback}
             />
-            {key}. {value}
+            {value}
           </label>
         ))}
       </div>
