@@ -163,7 +163,9 @@ useEffect(() => {
     // Format API response to match expected structure
     const formatted = res.data.data.map(item => {
       const q = item.question;
-      const img = item.image;
+      const imageUrl = q.image 
+    ? `${item.image}/${q.image}` 
+    : null;
 
       const options = {
         A: q.option_a,
@@ -178,6 +180,7 @@ useEffect(() => {
         options,
         correct: item.correct,
         explanation: q.explanation,
+        image: imageUrl,
       };
     });
 
