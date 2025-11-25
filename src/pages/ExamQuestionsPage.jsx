@@ -364,7 +364,7 @@ useEffect(() => {
         {q.image && (
             <div className="mt-3 flex justify-center">
               <img 
-                src={`${API_BASE_URL}/storage/${q.image}`} 
+                src={`${q.image}`} 
                 alt="Question" 
                 className="max-h-64 object-contain rounded-lg shadow-md"
               />
