@@ -163,6 +163,7 @@ useEffect(() => {
     // Format API response to match expected structure
     const formatted = res.data.data.map(item => {
       const q = item.question;
+      const img = item.image;
 
       const options = {
         A: q.option_a,
@@ -195,7 +196,7 @@ useEffect(() => {
 
   } catch (error) {
     console.error(error);
-    alert("⚠ Unauthorized. Please login again.");
+    alert("⚠ Unauthorized. Please login again."+error);
     localStorage.removeItem("authToken");
     navigate("/");
   }
@@ -360,6 +361,15 @@ useEffect(() => {
 
       <div className="mt-4">
         <h3 className="text-lg font-semibold mb-3">{q.question}</h3>
+        {q.image && (
+            <div className="mt-3 flex justify-center">
+              <img 
+                src={`${API_BASE_URL}/storage/${q.image}`} 
+                alt="Question" 
+                className="max-h-64 object-contain rounded-lg shadow-md"
+              />
+            </div>
+          )}
         {Object.entries(q.options).map(([key,value]) => (
           <label key={key} className="flex gap-2 cursor-pointer py-1">
             <input

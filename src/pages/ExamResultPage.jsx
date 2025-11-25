@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import ExamResult from "./components/ExamResult"
@@ -8,6 +8,7 @@ export default function ExamResultPage() {
   const { userExamId } = useParams();
   const [loading, setLoading] = useState(true);
   const [result, setResult] = useState(null);
+  const fetchedRef = useRef(false);
 
   useEffect(() => {
     const fetchResult = async () => {
@@ -22,14 +23,17 @@ export default function ExamResultPage() {
         );
 
         setResult(res.data);
+        localStorage.removeItem("remaining_time");
       } catch (error) {
         console.error("Failed to load exam results", error);
       }
 
       setLoading(false);
     };
-
-    fetchResult();
+    if (!fetchedRef.current) {
+      fetchResult();
+      fetchedRef.current = true;
+    }
   }, [userExamId]);
 
   if (loading) return <div className="p-6 text-center">Loading results...</div>;

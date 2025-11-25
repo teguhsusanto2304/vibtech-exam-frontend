@@ -43,7 +43,7 @@ export default function LoginPage() {
       } else if (err.code === "ERR_NETWORK") {
         setError("Unable to connect to server. Please check your network.");
       } else {
-        setError(`Login failed. Please try again later. url :${API_BASE_URL}`);
+        setError(`Login failed. Please try again later.`);
       }
     } finally {
       setLoading(false);

@@ -99,7 +99,7 @@ export default function ExamResult({ status, userExam, correctCount }) {
                 onClick={handleRetake}
                 className="bg-green-600 hover:bg-green-700 text-white rounded-lg h-12 px-8 font-bold transition"
               >
-                Re-Take Exam
+                Retake Exam
               </button>
             )}
 

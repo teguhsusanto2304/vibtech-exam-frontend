@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect,useRef } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import useAxiosAuth from "./axios";
@@ -8,7 +8,7 @@ export default function ExamPage() {
   const [arrExam, setArrExam] = useState(null);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
-
+  const fetchedRef = useRef(false);
   const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;  
   const navigate = useNavigate();
   useAxiosAuth();
@@ -45,7 +45,10 @@ export default function ExamPage() {
 
   // Fetch Exam API
   useEffect(() => {
-    fetchExam();
+    if (!fetchedRef.current) {
+      fetchExam();
+      fetchedRef.current = true;
+    }
   }, []);
 
   const handleLogout = async () => {
