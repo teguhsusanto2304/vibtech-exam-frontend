@@ -84,7 +84,7 @@ export default function ExamResult({ status, userExam, correctCount }) {
             <Message text="You have successfully completed your certification. Please log out to secure your session." />
           )}
 
-          {status === "failed_max" && (
+          {status === "cancel" && (
             <Message text="❌ You have reached the maximum of 3 exam attempts and did not pass. Your account is temporarily locked." danger />
           )}
 
@@ -94,7 +94,7 @@ export default function ExamResult({ status, userExam, correctCount }) {
 
           {/* Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            {status !== "passed" && status !== "failed_max" && (
+            {status !== "passed" && status !== "cancel" && (
               <button
                 onClick={handleRetake}
                 className="bg-green-600 hover:bg-green-700 text-white rounded-lg h-12 px-8 font-bold transition"
