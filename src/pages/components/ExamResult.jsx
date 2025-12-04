@@ -54,9 +54,17 @@ export default function ExamResult({ status, userExam, correctCount }) {
             <div className="text-center">
               <p className="text-4xl font-black dark:text-white">Exam Results</p>
 
-              {status === "passed" ? (
+                            {status === "passed" ? (
                 <p className="text-green-600 dark:text-green-400 mt-2 text-lg font-medium">
                   🎉 Congratulations, you have passed!
+                </p>
+              ) : status === "pending" ? (
+                <p className="text-blue-600 dark:text-blue-400 mt-2 text-lg font-medium">
+                  ⏳ Your exam is pending review. Please wait for results.
+                </p>
+              ) : status === "cancel" ? (
+                <p className="text-red-600 dark:text-red-400 mt-2 text-lg font-medium">
+                  ❌ You have reached the maximum of 3 exam attempts and did not pass. Your account is temporarily locked.
                 </p>
               ) : (
                 <p className="text-red-600 dark:text-red-400 mt-2 text-lg font-medium">
