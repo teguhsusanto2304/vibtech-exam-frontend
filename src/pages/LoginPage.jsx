@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from 'react';
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
@@ -7,11 +7,28 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
+  const [logoUrl, setLogoUrl] = useState('');
   const [loading, setLoading] = useState(false);
   
   const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
   const navigate = useNavigate();
   const togglePassword = () => setShowPassword(!showPassword);
+
+  useEffect(() => {
+    const fetchLogo = async () => {
+      try {
+        const response = await axios.get(`${API_BASE_URL}/settings/logo`);
+        if (response.data.success && response.data.data.logo) {
+          setLogoUrl(`${API_BASE_URL.replace('/api', '')}${response.data.data.logo}`);
+          localStorage.setItem("logoUrl",`${API_BASE_URL.replace('/api', '')}${response.data.data.logo}`);
+        }
+      } catch (error) {
+        console.error('Error fetching logo:', error);
+      }
+    };
+
+    fetchLogo();
+  }, []);
 
   // ✅ API Login Function
   const handleLogin = async (e) => {
@@ -30,7 +47,6 @@ export default function LoginPage() {
       if (response.data?.token) {
         // Store token in localStorage
         localStorage.setItem("authToken", response.data.token);
-
         // Redirect to exam page
         navigate("/exam");
       } else {
@@ -55,11 +71,9 @@ export default function LoginPage() {
       <div className="flex flex-col w-full max-w-md px-4 py-5">
         {/* Logo */}
         <div className="flex flex-col items-center mb-8">
-          <img
-            className="h-12 w-auto mb-4"
-            src="https://lh3.googleusercontent.com/aida-public/AB6AXuCziq1bTMarfttnlutU9XXECXYIcm-eA4VthAvzXlEwJTXyPMyOvam9Q1_ycZF4Q1o9Z8IUM6Kh9ChJrgZQgGvZxfLJsYdgW5xiA9CFCLL7VNt6sflvg6KlzkA2n06ZTthfdtA1O30TYxP0t8ufTfxjP1Pig0tigvKt_LZ5_GV3VVGzh8RNu7X2BJKoHADG_MrDCVKp5-P2LB8tIJtRUJk9RJ6YGRec4lwyPiSYC9_Jn9B8ZYaxitmIHLkuKHPy8_jmsZhpstqYRhVR"
-            alt="Vibtech Genesis Logo"
-          />
+            {!loading && logoUrl && (
+          <img src={logoUrl} alt="Logo" className="login-logo" />
+        )}
         </div>
 
         {/* Title */}
