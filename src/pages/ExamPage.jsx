@@ -6,12 +6,26 @@ import useAxiosAuth from "./axios";
 export default function ExamPage() {
   const [examStatus, setExamStatus] = useState("ready");
   const [arrExam, setArrExam] = useState(null);
+  const [appName, setAppName] = useState('');
+  const [logoUrl, setLogoUrl] = useState('');
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const fetchedRef = useRef(false);
   const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;  
   const navigate = useNavigate();
   useAxiosAuth();
+
+  useEffect(() => {
+    const storedLogoUrl = localStorage.getItem("logoUrl");
+    const storedAppName = localStorage.getItem("appName");
+    if (storedAppName) {
+      setAppName(storedAppName);
+      document.title = storedAppName || "Genesis Examination Portal";
+    }
+    if (storedLogoUrl) {
+      setLogoUrl(storedLogoUrl);
+    }
+  }, []);
 
   const fetchExam = async () => {
     try {
@@ -96,8 +110,21 @@ export default function ExamPage() {
     <div className="bg-background-light dark:bg-background-dark font-display min-h-screen flex flex-col">
       {/* Header */}
       <header className="flex items-center justify-between border-b border-[#dbe0e6] dark:border-gray-700 px-10 py-4 bg-white dark:bg-background-dark">
-        <h2 className="text-xl font-bold text-gray-800 dark:text-white">Vibtech Genesis Examination Portal</h2>
-
+        <div className="flex items-center gap-3">
+          {logoUrl && (
+            <img 
+              src={logoUrl} 
+              alt="App Logo" 
+              className="h-10 w-auto object-contain"
+              onError={(e) => {
+                e.target.style.display = 'none';
+              }}
+            />
+          )}
+          <h2 className="text-xl font-bold text-gray-800 dark:text-white">
+            {appName || "Genesis Examination Portal"}
+          </h2>
+        </div>
         <button onClick={handleLogout} className="rounded-full h-10 w-10 bg-red-500 text-white flex justify-center items-center hover:bg-red-600">
           <span className="material-symbols-outlined">logout</span>
         </button>
@@ -121,7 +148,8 @@ export default function ExamPage() {
           {/* Exam Details */}
           <div className="mt-4 p-4 border-l-4 border-primary/30 bg-primary/10 rounded-lg mb-8">
             <div className="grid grid-cols-1 sm:grid-cols-[150px_1fr] gap-x-6 gap-y-4">
-
+              <Detail label="Candidate Name" value={arrExam.user_name} />
+              <Detail label="Candidate Company" value={arrExam.user_company} />
               <Detail label="Total Questions" value={arrExam.questions} />
               <Detail label="Time Allotment" value={`${arrExam.duration} Minutes`} />
               <Detail label="Passing Rate" value={`${arrExam.pass_mark} %`} />

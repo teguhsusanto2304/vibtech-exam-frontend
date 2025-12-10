@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 
-export default function ExamResult({ status, userExam, correctCount }) {
+export default function ExamResult({ logoUrl, appName, status, userExam, user, correctCount }) {
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -16,76 +16,143 @@ export default function ExamResult({ status, userExam, correctCount }) {
     }
   };
 
+  const getStatusColor = () => {
+    if (status === "passed") return "green";
+    if (status === "pending") return "blue";
+    return "red";
+  };
+
   return (
     <div className="bg-background-light dark:bg-background-dark min-h-screen flex flex-col">
-      <header className="flex items-center justify-between border-b border-gray-200 dark:border-gray-700 px-10 py-3">
-        <div className="flex items-center gap-4 text-gray-900 dark:text-white">
-          <div className="size-6 text-primary">
-            <svg fill="currentColor" viewBox="0 0 48 48">
-              <path d="M24 4H6V17.333V30.667H24V44H42V30.667V17.333H24V4Z" />
-            </svg>
-          </div>
-          <h2 className="font-bold text-lg">Vibtech Genesis Examination Portal</h2>
+      {/* Header */}
+      <header className="flex items-center justify-between border-b border-[#dbe0e6] dark:border-gray-700 px-10 py-4 bg-white dark:bg-background-dark">
+        <div className="flex items-center gap-3">
+          {logoUrl && (
+            <img 
+              src={logoUrl} 
+              alt="App Logo" 
+              className="h-10 w-auto object-contain"
+              onError={(e) => {
+                e.target.style.display = 'none';
+              }}
+            />
+          )}
+          <h2 className="text-xl font-bold text-gray-800 dark:text-white">
+            {appName || "Genesis Examination Portal"}
+          </h2>
         </div>
       </header>
 
-      <main className="flex flex-col items-center p-10">
-        <div className="bg-white dark:bg-background-dark/50 shadow-lg rounded-xl p-8 max-w-2xl w-full space-y-8">
-          {/* Result Icon */}
-          <div className="flex flex-col items-center gap-4">
+      <main className="flex flex-col items-center p-6 sm:p-10 flex-1">
+        <div className="bg-white dark:bg-gray-800 shadow-2xl rounded-2xl p-8 sm:p-12 max-w-3xl w-full">
+          
+          {/* Result Icon & Title */}
+          <div className="flex flex-col items-center gap-6 mb-8">
             <div
-              className={`flex h-24 w-24 items-center justify-center rounded-full ${
+              className={`flex h-28 w-28 items-center justify-center rounded-full shadow-lg ${
                 status === "passed"
                   ? "bg-green-100 dark:bg-green-500/20"
+                  : status === "pending"
+                  ? "bg-blue-100 dark:bg-blue-500/20"
                   : "bg-red-100 dark:bg-red-500/20"
               }`}
             >
               <span
-                className={`material-symbols-outlined text-5xl ${
+                className={`material-symbols-outlined text-6xl font-bold ${
                   status === "passed"
                     ? "text-green-600 dark:text-green-400"
+                    : status === "pending"
+                    ? "text-blue-600 dark:text-blue-400"
                     : "text-red-600 dark:text-red-400"
                 }`}
               >
-                {status === "passed" ? "check" : "cancel"}
+                {status === "passed" ? "check_circle" : status === "pending" ? "schedule" : "cancel"}
               </span>
             </div>
 
-            <div className="text-center">
-              <p className="text-4xl font-black dark:text-white">Exam Results</p>
-
-                            {status === "passed" ? (
-                <p className="text-green-600 dark:text-green-400 mt-2 text-lg font-medium">
-                  🎉 Congratulations, you have passed!
-                </p>
-              ) : status === "pending" ? (
-                <p className="text-blue-600 dark:text-blue-400 mt-2 text-lg font-medium">
-                  ⏳ Your exam is pending review. Please wait for results.
-                </p>
-              ) : status === "cancel" ? (
-                <p className="text-red-600 dark:text-red-400 mt-2 text-lg font-medium">
-                  ❌ You have reached the maximum of 3 exam attempts and did not pass. Your account is temporarily locked.
-                </p>
-              ) : (
-                <p className="text-red-600 dark:text-red-400 mt-2 text-lg font-medium">
-                  ❌ You scored <strong>{userExam.scores}</strong>%. Required Passing: <strong>{userExam.pass_mark}%</strong>
-                </p>
-              )}
+            <div className="text-center space-y-3">
+              <h1 className="text-4xl sm:text-5xl font-black dark:text-white">
+                Exam Results
+              </h1>
+              <h2 className="text-2xl font-bold text-primary dark:text-blue-300">
+                {userExam.title}
+              </h2>
             </div>
           </div>
 
-          {/* Stats */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-            <Stat label="Total Questions" value={userExam.total_questions} />
-            <Stat label="Correct Answers" value={correctCount} />
-            <Stat label="Score" value={`${userExam.scores}%`} />
-
-            <Stat
-              label="Attempts Used"
-              value={`${userExam.attempts_used} of 3`}
-              full
-            />
+          {/* Status Message */}
+          <div className="mb-8 p-4 rounded-lg border-l-4 text-center space-y-2"
+            style={{
+              borderLeftColor: status === "passed" ? "#10b981" : status === "pending" ? "#3b82f6" : "#ef4444",
+              backgroundColor: status === "passed" ? "#f0fdf4" : status === "pending" ? "#f0f9ff" : "#fef2f2"
+            }}
+          >
+            {status === "passed" ? (
+              <p className="text-green-700 dark:text-green-400 text-lg font-bold">
+                🎉 You have passed the examination. Your result will be sent to your email. You may logout 
+now!
+              </p>
+            ) : status === "failed" ? (
+              <p className="text-blue-700 dark:text-blue-400 text-lg font-bold">
+                ⏳ Your exam is pending review. Please wait for results.
+              </p>
+            ) : status === "cancel" ? (
+              <p className="text-red-700 dark:text-red-400 text-lg font-bold">
+                ❌ You failed all 3 attempts of the examination. Your result will be sent to your email. You 
+may logout now.
+              </p>
+            ) : (
+              <p className="text-red-700 dark:text-red-400 text-lg font-bold">
+                You scored <span className="text-2xl">{userExam.scores}%</span>
+              </p>
+            )}
+            {status === "pending" && (
+              <p className="text-red-600 dark:text-red-300 text-sm">
+                You failed. Please retake the examination.
+              </p>
+            )}
           </div>
+
+          {/* Candidate Info */}
+          <div className="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-6 mb-8">
+            <h3 className="text-lg font-bold mb-4 dark:text-white">Candidate Information</h3>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <StatCard label="Name" value={user.name} />
+              <StatCard label="Company" value={user.company} />
+              <StatCard label="Email" value={user.email} />
+            </div>
+          </div>
+
+          {/* Exam Performance */}
+          <div className="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-6 mb-8">
+            <h3 className="text-lg font-bold mb-4 dark:text-white">Exam Performance</h3>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+              <StatCard label="Total Questions" value={userExam.total_questions} highlight />
+              <StatCard label="Correct Answers" value={correctCount} highlight />
+              <StatCard label="Score" value={`${userExam.scores}%`} highlight />
+              <StatCard label="Passing Rate" value={`${userExam.pass_mark}%`} />
+              <StatCard label="Attempts Used" value={`${userExam.attempts_used} of 3`} />
+              <StatCard label="Duration" value={userExam.duration ? `${userExam.duration} min` : "N/A"} />
+            </div>
+          </div>
+
+          {/* Progress Bar */}
+          {status == "pending" && (
+            <div className="mb-8">
+              <div className="flex justify-between mb-2">
+                <p className="text-sm font-medium dark:text-gray-300">Progress</p>
+                <p className="text-sm font-bold dark:text-white">{userExam.scores}%</p>
+              </div>
+              <div className="w-full bg-gray-300 dark:bg-gray-600 rounded-full h-2">
+                <div
+                  className={`h-2 rounded-full transition-all ${
+                    status === "passed" ? "bg-green-500" : "bg-red-500"
+                  }`}
+                  style={{ width: `${userExam.scores}%` }}
+                />
+              </div>
+            </div>
+          )}
 
           {/* Message */}
           {status === "passed" && (
@@ -93,7 +160,7 @@ export default function ExamResult({ status, userExam, correctCount }) {
           )}
 
           {status === "cancel" && (
-            <Message text="❌ You have reached the maximum of 3 exam attempts and did not pass. Your account is temporarily locked." danger />
+            <Message text="You have reached the maximum of 3 exam attempts. Your account is temporarily locked." danger />
           )}
 
           {status === "failed" && (
@@ -101,11 +168,11 @@ export default function ExamResult({ status, userExam, correctCount }) {
           )}
 
           {/* Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            {status !== "passed" && status !== "cancel" && (
+          <div className="flex flex-col sm:flex-row gap-4 justify-center mt-10">
+            {status !== "passed" && status !== "cancel" && status == "pending" && (
               <button
                 onClick={handleRetake}
-                className="bg-green-600 hover:bg-green-700 text-white rounded-lg h-12 px-8 font-bold transition"
+                className="bg-green-600 hover:bg-green-700 text-white rounded-lg h-12 px-8 font-bold transition shadow-md"
               >
                 Retake Exam
               </button>
@@ -113,7 +180,7 @@ export default function ExamResult({ status, userExam, correctCount }) {
 
             <button
               onClick={handleLogout}
-              className="bg-primary hover:bg-primary/90 text-white rounded-lg h-12 px-8 font-bold transition"
+              className="bg-primary hover:bg-primary/90 text-white rounded-lg h-12 px-8 font-bold transition shadow-md"
             >
               Logout
             </button>
@@ -124,18 +191,22 @@ export default function ExamResult({ status, userExam, correctCount }) {
   );
 }
 
-/* Reusable sub-component for stat cards */
-function Stat({ label, value, full = false }) {
+/* Stat Card Component */
+function StatCard({ label, value, highlight = false }) {
   return (
     <div
-      className={`flex flex-col gap-2 p-6 border rounded-lg dark:border-white/10 bg-background-light dark:bg-background-dark ${
-        full ? "col-span-1 sm:col-span-2 md:col-span-3" : ""
+      className={`flex flex-col gap-2 p-4 rounded-lg border dark:border-gray-600 ${
+        highlight
+          ? "bg-white dark:bg-gray-800 border-primary/30"
+          : "bg-white dark:bg-gray-800"
       }`}
     >
-      <p className="text-gray-500 dark:text-gray-400 text-base font-medium">
+      <p className="text-gray-500 dark:text-gray-400 text-sm font-medium">
         {label}
       </p>
-      <p className="text-2xl font-bold dark:text-white">{value}</p>
+      <p className={`font-bold ${highlight ? "text-lg text-primary dark:text-blue-300" : "dark:text-white"}`}>
+        {value}
+      </p>
     </div>
   );
 }
@@ -143,14 +214,14 @@ function Stat({ label, value, full = false }) {
 /* Message section */
 function Message({ text, danger = false }) {
   return (
-    <p
-      className={`text-center text-base px-4 ${
+    <div
+      className={`text-center text-sm px-4 py-3 rounded-lg border-l-4 ${
         danger
-          ? "text-red-600 dark:text-red-400"
-          : "text-gray-700 dark:text-gray-300"
+          ? "bg-red-50 dark:bg-red-500/10 border-red-500 text-red-700 dark:text-red-400"
+          : "bg-green-50 dark:bg-green-500/10 border-green-500 text-green-700 dark:text-green-400"
       }`}
     >
       {text}
-    </p>
+    </div>
   );
 }

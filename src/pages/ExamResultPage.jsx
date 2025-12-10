@@ -8,7 +8,21 @@ export default function ExamResultPage() {
   const { userExamId } = useParams();
   const [loading, setLoading] = useState(true);
   const [result, setResult] = useState(null);
+  const [appName, setAppName] = useState('');
+  const [logoUrl, setLogoUrl] = useState('');
   const fetchedRef = useRef(false);
+
+  useEffect(() => {
+    const storedLogoUrl = localStorage.getItem("logoUrl");
+    const storedAppName = localStorage.getItem("appName");
+    if (storedAppName) {
+      setAppName(storedAppName);
+      document.title = storedAppName || "Genesis Examination Portal";
+    }
+    if (storedLogoUrl) {
+      setLogoUrl(storedLogoUrl);
+    }
+  }, []);
 
   useEffect(() => {
     const fetchResult = async () => {
@@ -40,8 +54,11 @@ export default function ExamResultPage() {
 
   return (
     <ExamResult
+      logoUrl={logoUrl}
+      appName={appName}
       status={result.status}
       userExam={result.exam}
+      user={result.user}
       correctCount={result.correctCount}
     />
   );

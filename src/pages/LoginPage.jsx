@@ -8,6 +8,7 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [logoUrl, setLogoUrl] = useState('');
+  const [appName, setAppName] = useState('');
   const [loading, setLoading] = useState(false);
   
   const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
@@ -20,7 +21,10 @@ export default function LoginPage() {
         const response = await axios.get(`${API_BASE_URL}/settings/logo`);
         if (response.data.success && response.data.data.logo) {
           setLogoUrl(`${API_BASE_URL.replace('/api', '')}${response.data.data.logo}`);
+          setAppName(`${response.data.data.appName}`);
           localStorage.setItem("logoUrl",`${API_BASE_URL.replace('/api', '')}${response.data.data.logo}`);
+          localStorage.setItem("appName",`${response.data.data.appName}`);
+          document.title = response.data.data.appName || "Genesis Examination Portal";
         }
       } catch (error) {
         console.error('Error fetching logo:', error);
@@ -72,14 +76,20 @@ export default function LoginPage() {
         {/* Logo */}
         <div className="flex flex-col items-center mb-8">
             {!loading && logoUrl && (
-          <img src={logoUrl} alt="Logo" className="login-logo" />
-        )}
+          <img 
+              src={logoUrl} 
+              alt="Company Logo" 
+              className="h-20 w-auto object-contain"
+              onError={(e) => {
+                e.target.style.display = 'none';
+              }}
+            />        )}
         </div>
 
         {/* Title */}
         <div className="flex flex-col gap-3 p-4 text-center">
           <p className="text-4xl font-black leading-tight tracking-[-0.033em]">
-            Vibtech Genesis Examination Portal
+            {appName || "Genesis Examination Portal"}
           </p>
           <p className="text-text-secondary-light dark:text-text-secondary-dark text-base">
             Welcome back. Please log in to continue.

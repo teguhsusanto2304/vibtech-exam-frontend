@@ -5,11 +5,10 @@ import { useNavigate,useParams } from "react-router-dom";
 export default function ExamPage() {
   const [questions, setQuestions] = useState([]);
   const [current, setCurrent] = useState(0);
-  const [selected, setSelected] = useState("");
+  const [selected, setSelected] = useState("");  
   const [feedback, setFeedback] = useState(null);
   const [explanation, setExplanation] = useState(null);
   const [timeLeft, setTimeLeft] = useState(0);
-  const [warnings, setWarnings] = useState(0);
   const MAX_WARNINGS = 3;
   const navigate = useNavigate();
   const [allowNavigation, setAllowNavigation] = useState(false);
@@ -21,7 +20,6 @@ export default function ExamPage() {
   const reportCheat = async (eventType) => {
   try {
     const token = localStorage.getItem("authToken");
-
     await axios.post(
       `${API_BASE_URL}/exam/${examId}/cheat`,
       { event: eventType },
@@ -34,7 +32,11 @@ export default function ExamPage() {
   }
 };
 
-useEffect(() => {
+useEffect(() => {  
+  const storedAppName = localStorage.getItem("appName");
+  if (storedAppName) {
+      document.title = storedAppName || "Genesis Examination Portal";
+  }
   // Leaving fullscreen
   document.addEventListener("fullscreenchange", () => {
     if (!document.fullscreenElement) {
