@@ -132,7 +132,6 @@ may logout now.
               <StatCard label="Score" value={`${userExam.scores}%`} highlight />
               <StatCard label="Passing Rate" value={`${userExam.pass_mark}%`} />
               <StatCard label="Attempts Used" value={`${userExam.attempts_used} of 3`} />
-              <StatCard label="Duration" value={userExam.duration ? `${userExam.duration} min` : "N/A"} />
             </div>
           </div>
 
