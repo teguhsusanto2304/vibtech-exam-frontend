@@ -135,23 +135,7 @@ may logout now.
             </div>
           </div>
 
-          {/* Progress Bar */}
-          {status == "pending" && (
-            <div className="mb-8">
-              <div className="flex justify-between mb-2">
-                <p className="text-sm font-medium dark:text-gray-300">Progress</p>
-                <p className="text-sm font-bold dark:text-white">{userExam.scores}%</p>
-              </div>
-              <div className="w-full bg-gray-300 dark:bg-gray-600 rounded-full h-2">
-                <div
-                  className={`h-2 rounded-full transition-all ${
-                    status === "passed" ? "bg-green-500" : "bg-red-500"
-                  }`}
-                  style={{ width: `${userExam.scores}%` }}
-                />
-              </div>
-            </div>
-          )}
+          
 
           {/* Message */}
           {status === "passed" && (
